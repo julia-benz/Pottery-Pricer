@@ -402,11 +402,45 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+  const SUPABASE_URL = 'https://najcpwuotdsckykzybcn.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hamNwd3VvdGRzY2t5a3p5YmNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4ODU1NTIsImV4cCI6MjA5NzQ2MTU1Mn0.LRbpSxvj9iW3zDuHSL-HK4AUnL4x80DdHu2iPMP0UJg';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   const form = document.getElementById('waitlist-form');
   const success = document.getElementById('form-success');
-  form.addEventListener('submit', function(e){
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async function(e){
     e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Joining...';
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const shop = document.getElementById('shop').value.trim();
+
+    const { error } = await supabaseClient
+      .from('waitlist')
+      .insert([{ name, email, shop: shop || null }]);
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Get early access';
+
+    if (error) {
+      if (error.code === '23505') {
+        success.textContent = "You're already on the list — we'll be in touch.";
+      } else {
+        success.textContent = 'Something went wrong. Please try again in a moment.';
+        success.style.background = 'rgba(181,86,45,0.12)';
+        success.style.borderColor = '#B5562D';
+        success.style.color = '#8C3F1F';
+      }
+    } else {
+      success.textContent = "You're on the list — we'll be in touch as early access opens.";
+    }
+
     success.style.display = 'block';
     form.querySelectorAll('input').forEach(i => i.value = '');
     success.scrollIntoView({behavior:'smooth', block:'nearest'});
