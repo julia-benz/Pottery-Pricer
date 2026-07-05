@@ -6,10 +6,10 @@ import Link from 'next/link'
 
 export default function Home() {
   const [formData, setFormData] = useState({ name: '', email: '', shop: '' })
-  const [status, setStatus] = useState(null)
+  const [status, setStatus] = useState<{type: string, text: string} | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitting(true)
 
