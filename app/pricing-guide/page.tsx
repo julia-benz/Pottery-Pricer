@@ -20,6 +20,7 @@ export default function PricingGuide() {
           </Link>
           <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
             <Link href="/" className="nav-link">Home</Link>
+            <Link href="/calculator" className="nav-link">Calculator</Link>
             <Link href="/#waitlist" className="nav-cta">Join waitlist</Link>
           </div>
         </div>

@@ -51,6 +51,8 @@ export default function Home() {
           <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
             <Link href="/" className="nav-link">Home</Link>
             <Link href="/pricing-guide" className="nav-link">How to Price Pottery</Link>
+            <Link href="/calculator" className="nav-link">Calculator</Link>
+            <Link href="/login" className="nav-link">Log in</Link>
             <a className="nav-cta" href="#waitlist">Join waitlist</a>
           </div>
         </div>
