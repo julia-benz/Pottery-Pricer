@@ -36,7 +36,7 @@ export default async function Dashboard() {
             </svg>
             Pottery Pricer
           </Link>
-          <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
+          <div className="nav-links">
             <Link href="/calculator" className="nav-link">Calculator</Link>
             <form action="/auth/signout" method="post" style={{margin:0}}>
               <button type="submit" className="nav-cta" style={{background:'none',cursor:'pointer'}}>Sign out</button>
@@ -83,6 +83,16 @@ export default async function Dashboard() {
           </div>
         </div>
       </main>
+
+      <footer>
+        <div className="wrap" style={{flexDirection:'column',alignItems:'flex-start',gap:'10px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',width:'100%',flexWrap:'wrap',gap:'12px'}}>
+            <span>Pottery Pricer</span>
+            <span>&copy; 2026</span>
+          </div>
+          <p style={{fontSize:'11.5px',color:'var(--grog)',maxWidth:'60ch',lineHeight:'1.5'}}>The term &quot;Etsy&quot; is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p>
+        </div>
+      </footer>
     </>
   )
 }

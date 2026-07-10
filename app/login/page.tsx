@@ -49,7 +49,7 @@ export default function Login() {
             </svg>
             Pottery Pricer
           </Link>
-          <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
+          <div className="nav-links">
             <Link href="/" className="nav-link">Home</Link>
             <Link href="/calculator" className="nav-link">Calculator</Link>
           </div>
@@ -61,7 +61,7 @@ export default function Login() {
           <div className="auth-card">
             <span className="eyebrow">Sign in / Sign up</span>
             <h1>Welcome to the <em>studio</em></h1>
-            <p className="auth-sub">Enter your email and we&apos;ll send you a one-time sign-in link. No password to remember — like a kiln, we handle the hard part.</p>
+            <p className="auth-sub">Enter your email and we&apos;ll send you a one-time sign-in link. No password to remember.</p>
 
             <form onSubmit={handleSubmit}>
               <div className="field">

@@ -15,11 +15,12 @@ function money(n: number) {
 
 export default function Calculator() {
   const [materials, setMaterials] = useState('4.50')
+  const [otherMaterials, setOtherMaterials] = useState('')
   const [hours, setHours] = useState('1.5')
   const [rate, setRate] = useState('25')
   const [overhead, setOverhead] = useState('2.00')
   const [lossRate, setLossRate] = useState('10')
-  const [markup, setMarkup] = useState('2.5')
+  const [markup, setMarkup] = useState('2')
 
   const num = (s: string) => {
     const n = parseFloat(s)
@@ -27,12 +28,13 @@ export default function Calculator() {
   }
 
   const m = num(materials)
+  const other = num(otherMaterials)
   const laborCost = num(hours) * num(rate)
   const oh = num(overhead)
   const loss = Math.min(num(lossRate), 90) / 100
   const mk = num(markup)
 
-  const subtotal = m + laborCost + oh
+  const subtotal = m + other + laborCost + oh
   // Spread the cost of failed pieces across the ones that survive
   const baseCost = loss > 0 ? subtotal / (1 - loss) : subtotal
   const lossAllowance = baseCost - subtotal
@@ -66,10 +68,9 @@ export default function Calculator() {
             </svg>
             Pottery Pricer
           </Link>
-          <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
-            <Link href="/" className="nav-link">Home</Link>
-            <Link href="/pricing-guide" className="nav-link">How to Price Pottery</Link>
-            <Link href="/calculator" className="nav-link">Calculator</Link>
+          <div className="nav-links">
+            <Link href="/" className="nav-link hide-sm">Home</Link>
+            <Link href="/pricing-guide" className="nav-link hide-sm">How to Price Pottery</Link>
             <Link href="/login" className="nav-link">Log in</Link>
             <a className="nav-cta" href="/#waitlist">Join waitlist</a>
           </div>
@@ -92,14 +93,23 @@ export default function Calculator() {
               <div className="calc-group">
                 <div className="calc-group-title">Materials <span className="hint">per piece</span></div>
                 <div className="calc-fields">
-                  <div className="full">
-                    <label htmlFor="materials">Clay, glaze &amp; supplies</label>
+                  <div>
+                    <label htmlFor="materials">Clay &amp; glaze</label>
                     <div className="input-wrap">
                       <span className="prefix">$</span>
                       <input id="materials" className="has-prefix" type="number" min="0" step="0.25" inputMode="decimal"
                         value={materials} onChange={e => setMaterials(e.target.value)} />
                     </div>
-                    <div className="field-hint">Tip: divide your clay bag price by the number of pieces you get from it, then add glaze and any add-ons like cork lids or handles.</div>
+                    <div className="field-hint">Divide your clay bag price by pieces per bag, plus glaze used.</div>
+                  </div>
+                  <div>
+                    <label htmlFor="otherMaterials">Other materials <span style={{color:'var(--grog)',fontWeight:400}}>(optional)</span></label>
+                    <div className="input-wrap">
+                      <span className="prefix">$</span>
+                      <input id="otherMaterials" className="has-prefix" type="number" min="0" step="0.25" inputMode="decimal"
+                        placeholder="0.00" value={otherMaterials} onChange={e => setOtherMaterials(e.target.value)} />
+                    </div>
+                    <div className="field-hint">Cork lids, handles, decals, packaging — anything extra.</div>
                   </div>
                 </div>
               </div>
@@ -124,7 +134,7 @@ export default function Calculator() {
                         value={rate} onChange={e => setRate(e.target.value)} />
                       <span className="suffix">/hr</span>
                     </div>
-                    <div className="field-hint">What your skill is worth — not minimum wage.</div>
+                    <div className="field-hint">Most potters start at $20–30/hr. Experienced makers charge more — never minimum wage.</div>
                   </div>
                 </div>
               </div>
@@ -154,13 +164,14 @@ export default function Calculator() {
               </div>
 
               <div className="calc-group">
-                <div className="calc-group-title">Markup <span className="hint">2–3x covers fees, mishaps &amp; real profit</span></div>
+                <div className="calc-group-title">Markup</div>
                 <div className="markup-row">
-                  <input type="range" min="2" max="3" step="0.1" value={markup}
+                  <input type="range" min="1.5" max="3.5" step="0.1" value={markup}
                     onChange={e => setMarkup(e.target.value)}
                     aria-label="Markup multiplier" />
                   <span className="markup-value">{Number(markup).toFixed(1)}×</span>
                 </div>
+                <div className="field-hint" style={{marginTop:'10px'}}>Just starting out? 2× is a safe floor. Established work with a following supports 2.5–3×. Below 2×, fees and mishaps eat your margin fast.</div>
               </div>
             </div>
 
@@ -174,7 +185,10 @@ export default function Calculator() {
               <hr className="result-divider" />
 
               <div className="breakdown">
-                <div className="breakdown-row"><span>Materials</span><span className="val">{money(m)}</span></div>
+                <div className="breakdown-row"><span>Clay &amp; glaze</span><span className="val">{money(m)}</span></div>
+                {other > 0 && (
+                  <div className="breakdown-row"><span>Other materials</span><span className="val">{money(other)}</span></div>
+                )}
                 <div className="breakdown-row"><span>Labor ({num(hours) || 0} hrs × {money(num(rate))})</span><span className="val">{money(laborCost)}</span></div>
                 <div className="breakdown-row"><span>Overhead</span><span className="val">{money(oh)}</span></div>
                 <div className="breakdown-row"><span>Loss allowance ({Math.round(loss * 100)}%)</span><span className="val">{money(lossAllowance)}</span></div>
@@ -198,19 +212,50 @@ export default function Calculator() {
                 </div>
               )}
 
+              <a href="#upgrade" className="locked-row">
+                <span className="locked-badge">Pro</span>
+                <span>What do pieces like yours <em>actually</em> sell for on Etsy? See real market comps →</span>
+              </a>
+
               <div className="result-foot">
                 Fees estimated for US Etsy sellers: $0.20 listing + 6.5% transaction + 3% + $0.25 payment processing. Shipping charges also incur fees — price accordingly if you offer free shipping.
               </div>
             </aside>
 
           </div>
+
+          <section id="upgrade" className="upsell">
+            <span className="eyebrow">Don&apos;t lose this math</span>
+            <h2>Price it once. Track it forever.</h2>
+            <div className="plan-grid">
+              <div className="plan-card">
+                <div className="plan-name">Free account</div>
+                <ul className="plan-list">
+                  <li>Save every calculation — build a price list for your whole line</li>
+                  <li>Update prices as clay and firing costs change</li>
+                </ul>
+                <Link href="/login" className="btn-primary plan-cta">Create free account</Link>
+              </div>
+              <div className="plan-card plan-card-pro">
+                <div className="plan-name">Pro <span className="plan-soon">coming soon</span></div>
+                <ul className="plan-list">
+                  <li><strong>Real Etsy market comps</strong> — the median and range for pieces like yours, refreshed daily</li>
+                  <li><strong>Sales tracking</strong> — see what sold, for how much, and which pieces actually earn</li>
+                  <li><strong>Your studio, saved</strong> — preset your clays, glazes, monthly studio cost, and firing fees so every calculation starts filled in</li>
+                  <li><strong>AI listing copy</strong> — titles, tags, and descriptions written from your piece details</li>
+                </ul>
+                <a href="/#waitlist" className="btn-primary plan-cta plan-cta-pro">Join the waitlist</a>
+              </div>
+            </div>
+          </section>
+
         </div>
       </main>
 
       <footer>
         <div className="wrap">
-          <span>© 2026 Pottery Pricer</span>
-          <span>The term &apos;Etsy&apos; is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</span>
+          <span>Pottery Pricer — built by a working potter</span>
+          <span>&copy; 2026</span>
         </div>
       </footer>
     </>

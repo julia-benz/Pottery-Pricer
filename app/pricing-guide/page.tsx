@@ -18,7 +18,7 @@ export default function PricingGuide() {
             </svg>
             Pottery Pricer
           </Link>
-          <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
+          <div className="nav-links">
             <Link href="/" className="nav-link">Home</Link>
             <Link href="/calculator" className="nav-link">Calculator</Link>
             <Link href="/#waitlist" className="nav-cta">Join waitlist</Link>
@@ -146,7 +146,6 @@ export default function PricingGuide() {
             <span>Pottery Pricer — built by a working ceramicist</span>
             <span>&copy; 2026</span>
           </div>
-          <p style={{fontSize:'11.5px',color:'var(--grog)',maxWidth:'60ch',lineHeight:'1.5'}}>The term &quot;Etsy&quot; is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p>
         </div>
       </footer>
     </>

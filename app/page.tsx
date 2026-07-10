@@ -48,7 +48,7 @@ export default function Home() {
             </svg>
             Pottery Pricer
           </div>
-          <div style={{display:'flex',alignItems:'center',gap:'24px'}}>
+          <div className="nav-links">
             <Link href="/" className="nav-link">Home</Link>
             <Link href="/pricing-guide" className="nav-link">How to Price Pottery</Link>
             <Link href="/calculator" className="nav-link">Calculator</Link>
@@ -127,10 +127,6 @@ export default function Home() {
           </div>
           <div className="features-list">
             <div className="feature">
-              <h4>Ceramics-specific cost model</h4>
-              <p>Clay body, kiln share, firing cone, and your labor rate — the inputs that actually drive cost for thrown and handbuilt work.</p>
-            </div>
-            <div className="feature">
               <h4>Live Etsy market comps</h4>
               <p>See what similar pieces are actually priced and selling at, pulled straight from Etsy — not a guess or a flat percentage markup.</p>
             </div>
@@ -197,7 +193,6 @@ export default function Home() {
             <span>Pottery Pricer — built by a working potter</span>
             <span>&copy; 2026</span>
           </div>
-          <p style={{fontSize:'11.5px',color:'var(--grog)',maxWidth:'60ch',lineHeight:'1.5'}}>The term &quot;Etsy&quot; is a trademark of Etsy, Inc. This application uses the Etsy API but is not endorsed or certified by Etsy, Inc.</p>
         </div>
       </footer>
     </>
