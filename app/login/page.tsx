@@ -14,20 +14,26 @@ export default function Login() {
     setSubmitting(true)
     setStatus(null)
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/confirm?next=/dashboard`,
-      },
-    })
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/confirm?next=/dashboard`,
+        },
+      })
 
-    setSubmitting(false)
-
-    if (error) {
-      setStatus({ type: 'error', text: 'Something went wrong sending your link. Please try again.' })
-    } else {
-      setStatus({ type: 'success', text: 'Check your email — we sent you a sign-in link. It expires in an hour.' })
+      if (error) {
+        console.error('signInWithOtp error:', error)
+        setStatus({ type: 'error', text: error.message || 'Something went wrong sending your link. Please try again.' })
+      } else {
+        setStatus({ type: 'success', text: 'Check your email — we sent you a sign-in link. It expires in an hour.' })
+      }
+    } catch (err) {
+      console.error('signInWithOtp threw:', err)
+      setStatus({ type: 'error', text: 'Could not reach the server. Check your connection and try again.' })
+    } finally {
+      setSubmitting(false)
     }
   }
 
