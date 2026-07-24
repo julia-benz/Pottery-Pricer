@@ -84,6 +84,7 @@ export default function EtsyConnect() {
       <div style={styles.header}>
         <EtsyIcon />
         <span style={styles.label}>Etsy shop</span>
+        <span style={styles.proBadge}>Pro</span>
       </div>
 
       {statusMsg && (
@@ -108,17 +109,22 @@ export default function EtsyConnect() {
       ) : (
         <div>
           <p style={styles.description}>
-            Connect your Etsy shop to see market comparisons, publish
-            listings directly, and let Pottery Pricer learn what's
-            working in your shop over time.
+            Your shop connection powers the Pro toolkit: live market
+            comps for pieces like yours, sales tracking that shows which
+            pieces actually earn, and listing copy drafted from your real
+            shop — not generic templates.
+          </p>
+          <p style={styles.description}>
+            Pro is coming soon. Connecting takes about a minute, and
+            your comps will be ready the day it launches.
           </p>
           <a href="/api/etsy/connect" style={styles.connectBtn}>
             Connect your Etsy shop
           </a>
           <p style={styles.note}>
-            You'll be taken to Etsy to approve access. We'll only
-            read your listings and sales, and publish on your behalf
-            when you ask us to. We never post without your confirmation.
+            You'll be taken to Etsy to approve access. We only read
+            your listings and sales, and we never publish anything
+            without your explicit confirmation. Disconnect any time.
           </p>
         </div>
       )}
@@ -142,11 +148,18 @@ function EtsyIcon() {
 // ── Styles ────────────────────────────────────────────────────
 const styles = {
   wrapper: {
-    border:       '1px solid rgba(43,36,32,0.14)',
-    borderRadius: '4px',
-    padding:      '24px',
-    maxWidth:     '480px',
-    background:   '#F7F1E6',
+    // Renders inside a .dash-card, which provides the border/background.
+  },
+  proBadge: {
+    fontFamily:    "'JetBrains Mono', monospace",
+    fontSize:      '10.5px',
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    background:    '#B5562D',
+    color:         '#EDE3D3',
+    padding:       '3px 8px',
+    borderRadius:  '2px',
+    flexShrink:    0,
   },
   header: {
     display:      'flex',

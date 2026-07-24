@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase'
+import SaveCalculation from '@/components/SaveCalculation'
 
 // Etsy fee structure (US sellers)
 const ETSY_LISTING_FEE = 0.20
@@ -21,6 +23,28 @@ export default function Calculator() {
   const [overhead, setOverhead] = useState('2.00')
   const [lossRate, setLossRate] = useState('10')
   const [markup, setMarkup] = useState('2')
+  const [user, setUser] = useState<any>(null)
+
+  // Who's here? (Also restores inputs stashed before a login round-trip.)
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null))
+
+    try {
+      const stash = localStorage.getItem('pp_calc_stash')
+      if (stash) {
+        localStorage.removeItem('pp_calc_stash')
+        const s = JSON.parse(stash)
+        if (s.materials !== undefined) setMaterials(String(s.materials))
+        if (s.otherMaterials !== undefined) setOtherMaterials(String(s.otherMaterials))
+        if (s.hours !== undefined) setHours(String(s.hours))
+        if (s.rate !== undefined) setRate(String(s.rate))
+        if (s.overhead !== undefined) setOverhead(String(s.overhead))
+        if (s.lossRate !== undefined) setLossRate(String(s.lossRate))
+        if (s.markup !== undefined) setMarkup(String(s.markup))
+      }
+    } catch { /* bad stash — ignore */ }
+  }, [])
 
   const num = (s: string) => {
     const n = parseFloat(s)
@@ -71,8 +95,14 @@ export default function Calculator() {
           <div className="nav-links">
             <Link href="/" className="nav-link hide-sm">Home</Link>
             <Link href="/pricing-guide" className="nav-link hide-sm">How to Price Pottery</Link>
-            <Link href="/login" className="nav-link">Log in</Link>
-            <a className="nav-cta" href="/#waitlist">Join waitlist</a>
+            {user ? (
+              <Link href="/dashboard" className="nav-cta">Your studio</Link>
+            ) : (
+              <>
+                <Link href="/login" className="nav-link">Log in</Link>
+                <a className="nav-cta" href="/#waitlist">Join waitlist</a>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -212,6 +242,29 @@ export default function Calculator() {
                 </div>
               )}
 
+              <SaveCalculation
+                user={user}
+                hasInput={hasInput}
+                inputs={{ materials, otherMaterials, hours, rate, overhead, lossRate, markup }}
+                calc={{
+                  // Inputs — the calculator's single "Clay & glaze" field
+                  // maps to clay_cost; glaze_cost stays null until the
+                  // studio-presets build splits them.
+                  clay_cost: m,
+                  other_material_cost: other,
+                  labor_hours: num(hours),
+                  labor_rate: num(rate),
+                  overhead_cost: oh,
+                  breakage_rate: Math.min(num(lossRate), 90), // stored as percent, e.g. 10
+                  markup_applied: mk,
+                  // Outputs
+                  base_cost: baseCost,
+                  suggested_price: suggested,
+                  etsy_fee_estimate: etsyFees,
+                  suggested_price_after_fees: youKeep,
+                }}
+              />
+
               <a href="#upgrade" className="locked-row">
                 <span className="locked-badge">Pro</span>
                 <span>What do pieces like yours <em>actually</em> sell for on Etsy? See real market comps →</span>
@@ -234,7 +287,11 @@ export default function Calculator() {
                   <li>Save every calculation — build a price list for your whole line</li>
                   <li>Update prices as clay and firing costs change</li>
                 </ul>
-                <Link href="/login" className="btn-primary plan-cta">Create free account</Link>
+                {user ? (
+                  <Link href="/dashboard" className="btn-primary plan-cta">Go to your studio</Link>
+                ) : (
+                  <Link href="/login?next=/calculator" className="btn-primary plan-cta">Create free account</Link>
+                )}
               </div>
               <div className="plan-card plan-card-pro">
                 <div className="plan-name">Pro <span className="plan-soon">coming soon</span></div>

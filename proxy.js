@@ -40,10 +40,12 @@ export async function proxy(request) {
     return NextResponse.redirect(url)
   }
 
-  // Already logged in? Skip the login page.
+  // Already logged in? Skip the login page (honoring ?next= if present).
   if (user && path === '/login') {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    const next = url.searchParams.get('next')
+    url.pathname = next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard'
+    url.search = ''
     return NextResponse.redirect(url)
   }
 

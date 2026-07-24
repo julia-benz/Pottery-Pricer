@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import EtsyConnect from '@/components/EtsyConnect'
+import DeleteCalcButton from '@/components/DeleteCalcButton'
 
 export const metadata = {
   title: 'Your Studio | Pottery Pricer',
@@ -20,9 +21,24 @@ export default async function Dashboard() {
 
   const { data: calculations } = await supabase
     .from('pricing_calculations')
-    .select('*')
+    .select('id, piece_name, photo_path, base_cost, suggested_price, created_at')
     .order('created_at', { ascending: false })
-    .limit(20)
+    .limit(50)
+
+  // Photos live in a private bucket — sign short-lived URLs for display.
+  const photoUrls: Record<string, string> = {}
+  const paths = (calculations ?? []).map(c => c.photo_path).filter(Boolean) as string[]
+  if (paths.length > 0) {
+    const { data: signed } = await supabase.storage
+      .from('piece-photos')
+      .createSignedUrls(paths, 60 * 60)
+    signed?.forEach(s => { if (s.signedUrl && s.path) photoUrls[s.path] = s.signedUrl })
+  }
+
+  const money = (n: number | null) =>
+    typeof n === 'number'
+      ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+      : '—'
 
   return (
     <>
@@ -52,32 +68,64 @@ export default async function Dashboard() {
           <p className="dash-sub">{user.email}</p>
 
           <div className="dash-grid">
-            <div className="dash-card">
+            <div className="dash-card dash-card-wide">
               <h2>Saved calculations</h2>
               {calculations && calculations.length > 0 ? (
-                <ul className="dash-list">
-                  {calculations.map((calc) => (
-                    <li key={calc.id} className="dash-list-item">
-                      <span>{calc.piece_name || 'Untitled piece'}</span>
-                      <span className="dash-mono">
-                        {new Date(calc.created_at).toLocaleDateString()}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="dash-table-wrap">
+                  <table className="dash-table">
+                    <thead>
+                      <tr>
+                        <th>Piece</th>
+                        <th className="num">True cost</th>
+                        <th className="num">Suggested</th>
+                        <th>Saved</th>
+                        <th aria-label="Actions"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {calculations.map((calc) => (
+                        <tr key={calc.id}>
+                          <td>
+                            <div className="dash-piece">
+                              {calc.photo_path && photoUrls[calc.photo_path] ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={photoUrls[calc.photo_path]}
+                                  alt={calc.piece_name || 'Piece photo'}
+                                  className="dash-thumb"
+                                />
+                              ) : (
+                                <span className="dash-thumb dash-thumb-empty" aria-hidden="true">
+                                  <svg viewBox="0 0 26 26" fill="none" width="16" height="16">
+                                    <circle cx="13" cy="13" r="12" stroke="currentColor" strokeWidth="1.4"/>
+                                    <circle cx="13" cy="13" r="7.5" stroke="currentColor" strokeWidth="1.4"/>
+                                    <circle cx="13" cy="13" r="3" fill="currentColor"/>
+                                  </svg>
+                                </span>
+                              )}
+                              <span className="dash-piece-name">{calc.piece_name || 'Untitled piece'}</span>
+                            </div>
+                          </td>
+                          <td className="num dash-mono">{money(calc.base_cost)}</td>
+                          <td className="num dash-price">{money(calc.suggested_price)}</td>
+                          <td className="dash-mono">{new Date(calc.created_at).toLocaleDateString()}</td>
+                          <td className="dash-actions">
+                            <DeleteCalcButton id={calc.id} photoPath={calc.photo_path} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
                 <p className="dash-empty">
-                  Nothing saved yet. Run the <Link href="/calculator">calculator</Link> and
+                  Nothing saved yet. Run the <Link href="/calculator">calculator</Link>{' '}and
                   save a piece — it&apos;ll show up here.
                 </p>
               )}
             </div>
 
             <div className="dash-card">
-              <h2>Etsy shop</h2>
-              <p className="dash-empty" style={{marginBottom:'16px'}}>
-                Connect your shop to unlock market comparables and listing tools.
-              </p>
               <EtsyConnect />
             </div>
           </div>

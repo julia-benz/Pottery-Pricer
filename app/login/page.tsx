@@ -16,10 +16,16 @@ export default function Login() {
 
     try {
       const supabase = createClient()
+
+      // Honor ?next=/somewhere so users land back where they started
+      // (e.g. the calculator's save flow). Only allow same-site paths.
+      const rawNext = new URLSearchParams(window.location.search).get('next')
+      const next = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard'
+
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm?next=/dashboard`,
+          emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(next)}`,
         },
       })
 

@@ -264,3 +264,44 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   .plan-grid { grid-template-columns: 1fr; }
   .upsell { margin-top: 56px; padding-top: 40px; }
 }
+
+/* ── save-calculation panel (inside dark results panel) ── */
+.save-panel { margin-top: 22px; padding: 18px 16px; border: 1px solid rgba(237,227,211,0.22); border-radius: 3px; background: rgba(237,227,211,0.05); }
+.save-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #D89A6F; margin-bottom: 10px; }
+.save-sub { font-size: 13.5px; color: #C9BFAF; line-height: 1.55; margin: 0 0 14px; }
+.save-note { font-size: 12px; color: #8C7E6A; margin: 10px 0 0; line-height: 1.5; }
+.save-label { display: block; font-size: 12.5px; font-weight: 700; color: #EDE3D3; margin: 12px 0 6px; }
+.save-label:first-of-type { margin-top: 0; }
+.save-optional { color: #8C7E6A; font-weight: 400; }
+.save-input { width: 100%; padding: 10px 12px; font-family: 'Karla', sans-serif; font-size: 14.5px; color: var(--ink); background: var(--slip); border: 1px solid rgba(237,227,211,0.3); border-radius: 3px; }
+.save-input:focus { outline: 2px solid #D89A6F; outline-offset: 1px; }
+.photo-row { display: flex; align-items: center; gap: 12px; }
+.photo-input { font-size: 13px; color: #C9BFAF; max-width: 100%; }
+.photo-input::file-selector-button { font-family: 'Karla', sans-serif; font-weight: 700; font-size: 13px; background: transparent; color: #EDE3D3; border: 1px solid rgba(237,227,211,0.4); border-radius: 3px; padding: 8px 14px; margin-right: 10px; cursor: pointer; }
+.photo-preview { width: 56px; height: 56px; object-fit: cover; border-radius: 3px; border: 1px solid rgba(237,227,211,0.3); }
+.photo-clear { background: none; border: none; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #C9BFAF; border-bottom: 1px solid #8C7E6A; padding: 2px 0; }
+.btn-save { margin-top: 16px; width: 100%; font-family: 'Karla', sans-serif; font-weight: 700; font-size: 14.5px; background: var(--clay); color: var(--slip); border: none; padding: 12px 18px; border-radius: 3px; cursor: pointer; transition: background .15s; }
+.btn-save:hover { background: #C96538; }
+.btn-save:disabled { opacity: 0.7; cursor: not-allowed; }
+.save-msg { margin-top: 12px; font-size: 13.5px; padding: 10px 12px; border-radius: 3px; line-height: 1.5; }
+.save-msg-success { background: rgba(61,107,92,0.25); border: 1px solid var(--glaze); color: #BFE0D0; }
+.save-msg-error { background: rgba(181,86,45,0.22); border: 1px solid var(--clay); color: #E8C4AC; }
+.save-msg-link { color: #D89A6F; }
+
+/* ── dashboard: saved calculations table ── */
+.dash-card-wide { grid-column: 1 / -1; }
+.dash-table-wrap { overflow-x: auto; }
+.dash-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.dash-table th { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grog); text-align: left; font-weight: 500; padding: 0 12px 10px 0; border-bottom: 1px solid var(--line); }
+.dash-table td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.dash-table .num { text-align: right; }
+.dash-table th.num { padding-right: 12px; }
+.dash-piece { display: flex; align-items: center; gap: 12px; min-width: 180px; }
+.dash-piece-name { font-weight: 700; }
+.dash-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 3px; border: 1px solid var(--line); flex-shrink: 0; }
+.dash-thumb-empty { display: inline-flex; align-items: center; justify-content: center; background: var(--bisque); color: var(--grog); }
+.dash-price { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--clay-dark); font-weight: 700; }
+.dash-actions { width: 40px; text-align: right; }
+.dash-delete { background: none; border: 1px solid transparent; border-radius: 3px; cursor: pointer; font-size: 15px; line-height: 1; color: var(--grog); padding: 5px 8px; transition: color .15s, border-color .15s; }
+.dash-delete:hover { color: var(--clay-dark); border-color: var(--line); }
+.dash-delete-confirm { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--clay-dark); border-color: var(--clay); }
